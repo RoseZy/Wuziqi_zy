@@ -21,8 +21,11 @@ public class WuziqiPanel extends View {
 
     private  int mPanelwidth;
     private  float mLineHeigth;
-    private  int  MAX_LINE=10;
-    private int MAX_COUNT_IN_LINE=5;
+    private static final int MAX_LINE=10;
+
+    public static final int MAX_PIECES_NUMBER=MAX_LINE*MAX_LINE;
+
+    private static final int MAX_COUNT_IN_LINE=5;
 
     private Paint mpaint=new Paint();
 
@@ -112,6 +115,7 @@ public class WuziqiPanel extends View {
             }
             invalidate();
             mIsWhite = !mIsWhite;
+            return true;
 
         }
 
@@ -156,147 +160,129 @@ public class WuziqiPanel extends View {
             int y=p.y;
 
           boolean win =  checkHorizontal(x , y , points);
+            if (win)return true;
 
-            if (win)return true;
-            win=checkHorizontal(x,y,points);
-            if (win)return true;
             win=checkVertical (x,y,points);
             if (win)return true;
-            win=checkLefaDiagonal(x,y,points);
+
+            win=checkLeftDiagonal(x,y,points);
             if (win)return true;
+
             win=checkRightDiagonal(x,y,points);
+            if (win)return true;
 
         }
 
         return false;
     }
 
+    public static boolean checkIsFull(int number) {
+        if(number== WuziqiPanel.MAX_PIECES_NUMBER) {
+            return true;
+        }
+        return false;
+    }
     /*判断线，y位置的棋子，是否横向有相邻的五个一致。*/
-    private boolean checkHorizontal(int x, int y, List<Point> points)
-    {
+    private static boolean checkHorizontal(int x, int y, List<Point> piecesArray) {
         int count=1;
-        /*左边*/
-        for(int i=1 ; i< MAX_COUNT_IN_LINE;i++)
-        {
-            if(points.contains(new Point(x - i,y)))
-            {
+        /*判断左右*/
+        for(int i=1;i<MAX_COUNT_IN_LINE;i++) {
+            if(piecesArray.contains(new Point(x-i,y))) {
                 count++;
-            }else {
+            } else {
                 break;
             }
         }
-
         if(count==MAX_COUNT_IN_LINE) return true;
 
-        for(int i=1 ; i< MAX_COUNT_IN_LINE;i++)
-        {
-            if(points.contains(new Point(x + i,y)))
-            {
+        for(int i=1;i<MAX_COUNT_IN_LINE;i++) {
+            if(piecesArray.contains(new Point(x+i,y))) {
                 count++;
-            }else {
+            } else {
                 break;
             }
         }
-
         if(count==MAX_COUNT_IN_LINE) return true;
 
         return false;
     }
 
-    private boolean checkVertical(int x, int y, List<Point> points)
-    {
+    private static boolean checkVertical(int x, int y, List<Point> piecesArray) {
         int count=1;
-        /*上*/
-        for(int i=1 ; i< MAX_COUNT_IN_LINE;i++)
-        {
-            if(points.contains(new Point(x ,y- i)))
-            {
+       /*判断上下*/
+        for(int i=1;i<MAX_COUNT_IN_LINE;i++) {
+            if(piecesArray.contains(new Point(x,y-i))) {
                 count++;
-            }else {
+            } else {
                 break;
             }
         }
-
         if(count==MAX_COUNT_IN_LINE) return true;
 
-        for(int i=1 ; i< MAX_COUNT_IN_LINE;i++)
-        {
-            if(points.contains(new Point(x ,y+ i)))
-            {
+
+        for(int i=1;i<MAX_COUNT_IN_LINE;i++) {
+            if(piecesArray.contains(new Point(x,y+i))) {
                 count++;
-            }else {
+            } else {
                 break;
             }
         }
-
         if(count==MAX_COUNT_IN_LINE) return true;
 
         return false;
     }
 
-    private boolean checkLefaDiagonal(int x, int y, List<Point> points)
-    {
+        /*判断左斜*/
+    private static boolean checkLeftDiagonal(int x, int y, List<Point> piecesArray) {
         int count=1;
-        /*左斜*/
-        for(int i=1 ; i< MAX_COUNT_IN_LINE;i++)
-        {
-            if(points.contains(new Point(x- i ,y-i)))
-            {
+
+        for(int i=1;i<MAX_COUNT_IN_LINE;i++) {
+            if(piecesArray.contains(new Point(x-i,y-i))) {
                 count++;
-            }else {
+            } else {
                 break;
             }
         }
-
         if(count==MAX_COUNT_IN_LINE) return true;
 
-        for(int i=1 ; i< MAX_COUNT_IN_LINE;i++)
-        {
-            if(points.contains(new Point(x+i ,y+i)))
-            {
+        //判断右斜
+        for(int i=1;i<MAX_COUNT_IN_LINE;i++) {
+            if(piecesArray.contains(new Point(x+i,y+i))) {
                 count++;
-            }else {
+            } else {
                 break;
             }
         }
-
-        if(count==MAX_COUNT_IN_LINE) return true;
-
-        return false;
-    }
-
-    private boolean checkRightDiagonal(int x, int y, List<Point> points)
-    {
-        int count=1;
-        /*右斜*/
-        for(int i=1 ; i< MAX_COUNT_IN_LINE;i++)
-        {
-            if(points.contains(new Point(x- i ,y+ i)))
-            {
-                count++;
-            }else {
-                break;
-            }
-        }
-
-        if(count==MAX_COUNT_IN_LINE) return true;
-
-        for(int i=1 ; i< MAX_COUNT_IN_LINE;i++)
-        {
-            if(points.contains(new Point(x + i,y-i)))
-            {
-                count++;
-            }else {
-                break;
-            }
-        }
-
         if(count==MAX_COUNT_IN_LINE) return true;
 
         return false;
     }
 
 
+    private static boolean checkRightDiagonal(int x, int y, List<Point> piecesArray) {
+        int count=1;
+
+        for(int i=1;i<MAX_COUNT_IN_LINE;i++) {
+            if(piecesArray.contains(new Point(x-i,y+i))) {
+                count++;
+            } else {
+                break;
+            }
+        }
+        if(count==MAX_COUNT_IN_LINE) return true;
+
+
+        for(int i=1;i<MAX_COUNT_IN_LINE;i++) {
+            if(piecesArray.contains(new Point(x+i,y-i))) {
+                count++;
+            } else {
+                break;
+            }
+        }
+        if(count==MAX_COUNT_IN_LINE) return true;
+
+        return false;
+    }
     private void drawPieces(Canvas canvas)
     {
         for(int i=0, n = mWhiteArray.size(); i< n ; i++)
